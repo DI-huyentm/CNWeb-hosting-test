@@ -1,3 +1,4 @@
 GR_BE/node_modules
 GR_FE/node_modules
 GR_BE/*.env
+.DS_Store

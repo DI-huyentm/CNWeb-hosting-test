@@ -2,15 +2,14 @@ version: "3"
 
 services:
   mysql:
-    image: mysql
+    image: acrcnweb01.azurecr.io/cnweb-mysql:latest
     ports:
-      - "3308:3306" # External port 3308 mapped to internal port 3306
+      - "3308:3306"
     environment:
       MYSQL_ROOT_PASSWORD: Lebaoanh194470@
       MYSQL_DATABASE: graduation_project
     volumes:
-      - mysql-data:/var/lib/mysql
-      - ./db:/docker-entrypoint-initdb.d
+      - ${WEBAPP_STORAGE_HOME}/mysql-data:/var/lib/mysql:rw
     healthcheck:
       test:
         [
@@ -28,11 +27,10 @@ services:
       retries: 3
 
   backend:
-    build:
-      context: ./GR_BE
+    image: acrcnweb01.azurecr.io/cnweb-be:latest
     volumes:
-      - ./GR_BE:/app
-      - /app/node_modules
+      - ${WEBAPP_STORAGE_HOME}/GR_BE:/app:rw
+      - ${WEBAPP_STORAGE_HOME}/app/node_modules
     ports:
       - "3001:3001"
     env_file:
@@ -42,15 +40,12 @@ services:
         condition: service_healthy
 
   frontend:
-    build:
-      context: ./GR_FE
+    image: acrcnweb01.azurecr.io/cnweb-fe:latest
     volumes:
-      - ./GR_FE:/app
-      - /app/node_modules
+      - ${WEBAPP_STORAGE_HOME}/GR_FE:/app:rw
+      - ${WEBAPP_STORAGE_HOME}/app/node_modules
     ports:
-      # - "5173:5173"
-      # ports:
-      - "81:80"
+      - "80:80"
     stdin_open: true
     tty: true
     depends_on:
